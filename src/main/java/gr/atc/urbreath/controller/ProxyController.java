@@ -51,7 +51,7 @@ public class ProxyController {
      *
      * @return List of KPIs
      */
-    @Operation(summary = "Retrieve KPIs", security = @SecurityRequirement(name = ""))
+    @Operation(summary = "Retrieve KPIs", security = @SecurityRequirement(name = "bearerToken"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "KPIs retrieved successfully")
             // TODO: Document Error Responses

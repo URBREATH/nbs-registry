@@ -19,6 +19,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,12 +61,15 @@ public class NbsController {
             @ApiResponse(responseCode = "404", description = "NBS not found", 
                 content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = BaseAppResponse.class))),
+                @ApiResponse(responseCode = "404", description = "Invalid ID provided", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class))),
             @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
-                        content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = BaseAppResponse.class)))
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationById(@PathVariable @NotEmpty(message = "ID is required") String id) throws ResourceNotFoundException, DataMappingException{
+    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationById(@PathVariable @NotEmpty(message = "ID is required") String id) throws ResourceNotFoundException, DataMappingException, ConversionFailedException {
         return new ResponseEntity<>(BaseAppResponse.success(nbsService.retrieveNbsById(id), "NBS retrieved successfully"), HttpStatus.OK);
     }
 
@@ -76,10 +81,18 @@ public class NbsController {
      */
     @Operation(summary = "Retrieve a NBS by Title", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "NBS retrieved successfully")
+            @ApiResponse(responseCode = "200", description = "NBS retrieved successfully",
+                content = @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = NbsDataDto.class))),
+            @ApiResponse(responseCode = "404", description = "NBS not found", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/title/{title}")
-    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationByTitle(@PathVariable @NotEmpty(message = "NBS title is required") String title){
+    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationByTitle(@PathVariable @NotEmpty(message = "NBS title is required") String title) throws ResourceNotFoundException, DataMappingException {
         return new ResponseEntity<>(BaseAppResponse.success(nbsService.retrieveNbsByTitle(title), "NBS retrieved successfully"), HttpStatus.OK);
     }
 
@@ -96,11 +109,16 @@ public class NbsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "NBSs retrieved successfully",
                 content = @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = NbsDataDto.class)))
-            // TODO: Document Error Responses
+                schema = @Schema(implementation = NbsDataDto.class))),
+            @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/")
-    public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size, @RequestParam(defaultValue = "dateCreated") String sort, @RequestParam(defaultValue = "desc") String direction){
+    public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefData(@RequestParam(defaultValue = "0") int page, 
+        @RequestParam(defaultValue = "9") int size, 
+        @RequestParam(defaultValue = "dateCreated") String sort, 
+        @RequestParam(defaultValue = "desc") String direction) throws DataMappingException {
         Page<NbsDataDto> nbsPage = nbsService.retrieveAllNbsBriefData(generatePageableObject(page, size, sort, direction));
 
         return new ResponseEntity<>(BaseAppResponse.success(formulatePaginatedResponse(nbsPage), "NBSs retrieved successfully"), HttpStatus.OK);
@@ -118,11 +136,19 @@ public class NbsController {
      */
     @Operation(summary = "Retrieve all NBS Brief Information filtered by Climate Zone", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "NBSs for {climateZone} zone retrieved successfully")
-            // TODO: Document Error Responses
+            @ApiResponse(responseCode = "200", description = "NBSs for {climateZone} zone retrieved successfully",
+                content = @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = NbsDataDto.class))),
+            @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/zone/{climateZone}")
-    public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefDataByClimateZone(@PathVariable @ValidClimateZone String climateZone, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size, @RequestParam(defaultValue = "dateCreated") String sort, @RequestParam(defaultValue = "desc") String direction){
+    public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefDataByClimateZone(
+        @PathVariable @ValidClimateZone String climateZone, 
+        @RequestParam(defaultValue = "0") int page, 
+        @RequestParam(defaultValue = "9") int size, @RequestParam(defaultValue = "dateCreated") String sort, 
+        @RequestParam(defaultValue = "desc") String direction) throws DataMappingException{
         Page<NbsDataDto> nbsPage = nbsService.retrieveAllNbsBriefDataByClimateZone(ClimateZone.fromString(climateZone), generatePageableObject(page, size, sort, direction));
 
         return new ResponseEntity<>(BaseAppResponse.success(formulatePaginatedResponse(nbsPage), "NBSs for " + climateZone + " zone retrieved successfully"), HttpStatus.OK);
@@ -137,11 +163,13 @@ public class NbsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "NBSs geolocations retrieved successfully",
                 content = @Content(mediaType = "application/json", 
-                schema = @Schema(implementation = GeoLocationDto.class)))
-                // TODO: Document Error Responses
+                schema = @Schema(implementation = GeoLocationDto.class))),
+            @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/geolocations")
-    public ResponseEntity<BaseAppResponse<List<GeoLocationDto>>> retrieveNbsGeoLocations(){
+    public ResponseEntity<BaseAppResponse<List<GeoLocationDto>>> retrieveNbsGeoLocations() throws DataMappingException {
         return new ResponseEntity<>(BaseAppResponse.success(nbsService.retrieveAllNbsGeolocations(), "NBSs geolocations retrieved successfully"), HttpStatus.OK);
     }
 
