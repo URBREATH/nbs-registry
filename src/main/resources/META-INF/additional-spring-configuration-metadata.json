@@ -1,0 +1,89 @@
+{
+  "properties": [
+    {
+      "name": "build.version",
+      "type": "java.lang.String",
+      "description": "A description for 'build.version'"
+    },
+    {
+      "name": "spring.thread-executor",
+      "type": "java.lang.String",
+      "description": "A description for 'spring.thread-executor'"
+    },
+    {
+      "name": "springdoc.api-docs.path",
+      "type": "java.lang.String",
+      "description": "A description for 'springdoc.api-docs.path'"
+    },
+    {
+      "name": "springdoc.swagger-ui.path",
+      "type": "java.lang.String",
+      "description": "A description for 'springdoc.swagger-ui.path'"
+    },
+    {
+      "name": "urbreath.idra.url",
+      "type": "java.lang.String",
+      "description": "A description for 'urbreath.idra.url'"
+    },
+    {
+      "name": "urbreath.kpi.manager.url",
+      "type": "java.lang.String",
+      "description": "A description for 'urbreath.kpi.manager.url'"
+    },
+    {
+      "name": "keycloak.token-uri",
+      "type": "java.lang.String",
+      "description": "A description for 'keycloak.token-uri'"
+    },
+    {
+      "name": "spring.security.cors.domains",
+      "type": "java.lang.String",
+      "description": "A description for 'spring.security.cors.domains'"
+    },
+    {
+      "name": "keycloak.client.secret",
+      "type": "java.lang.String",
+      "description": "A description for 'keycloak.client.secret'"
+    },
+    {
+      "name": "keycloak.client",
+      "type": "java.lang.String",
+      "description": "A description for 'keycloak.client'"
+    },
+    {
+      "name": "keycloak.url",
+      "type": "java.lang.String",
+      "description": "A description for 'keycloak.url'"
+    },
+    {
+      "name": "keycloak.realm",
+      "type": "java.lang.String",
+      "description": "A description for 'keycloak.realm'"
+    },
+    {
+      "name": "minio.bucket",
+      "type": "java.lang.String",
+      "description": "A description for 'minio.bucket'"
+    },
+    {
+      "name": "minio.password",
+      "type": "java.lang.String",
+      "description": "A description for 'minio.password'"
+    },
+    {
+      "name": "minio.username",
+      "type": "java.lang.String",
+      "description": "A description for 'minio.username'"
+    },
+    {
+      "name": "minio.url",
+      "type": "java.lang.String",
+      "description": "A description for 'minio.url'"
+    },
+    {
+      "name": "application.url",
+      "type": "java.lang.String",
+      "description": "A description for 'application.url'"
+    }
+  ]
+}
