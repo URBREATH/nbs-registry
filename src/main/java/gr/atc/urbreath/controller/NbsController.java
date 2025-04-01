@@ -6,9 +6,13 @@ import gr.atc.urbreath.dto.GeoLocationDto;
 import gr.atc.urbreath.dto.NbsCreationDataDto;
 import gr.atc.urbreath.dto.NbsDataDto;
 import gr.atc.urbreath.enums.ClimateZone;
+import gr.atc.urbreath.exception.CustomExceptions.DataMappingException;
+import gr.atc.urbreath.exception.CustomExceptions.ResourceNotFoundException;
 import gr.atc.urbreath.service.interfaces.INbsService;
 import gr.atc.urbreath.validation.ValidClimateZone;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -51,11 +55,16 @@ public class NbsController {
      */
     @Operation(summary = "Retrieve a NBS by ID", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "NBS retrieved successfully")
-            // TODO: Document Error Responses
+            @ApiResponse(responseCode = "200", description = "NBS retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "NBS not found", 
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = BaseAppResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
+                        content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = BaseAppResponse.class)))
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationById(@PathVariable @NotEmpty(message = "ID is required") String id){
+    public ResponseEntity<BaseAppResponse<NbsDataDto>> retrieveNbsInformationById(@PathVariable @NotEmpty(message = "ID is required") String id) throws ResourceNotFoundException, DataMappingException{
         return new ResponseEntity<>(BaseAppResponse.success(nbsService.retrieveNbsById(id), "NBS retrieved successfully"), HttpStatus.OK);
     }
 
@@ -85,10 +94,12 @@ public class NbsController {
      */
     @Operation(summary = "Retrieve all NBS Brief Information", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "NBSs retrieved successfully")
+            @ApiResponse(responseCode = "200", description = "NBSs retrieved successfully",
+                content = @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = NbsDataDto.class)))
             // TODO: Document Error Responses
     })
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9") int size, @RequestParam(defaultValue = "dateCreated") String sort, @RequestParam(defaultValue = "desc") String direction){
         Page<NbsDataDto> nbsPage = nbsService.retrieveAllNbsBriefData(generatePageableObject(page, size, sort, direction));
 
@@ -124,8 +135,10 @@ public class NbsController {
      */
     @Operation(summary = "Retrieve all NBS GeoLocations", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "NBSs geolocations retrieved successfully")
-            // TODO: Document Error Responses
+            @ApiResponse(responseCode = "200", description = "NBSs geolocations retrieved successfully",
+                content = @Content(mediaType = "application/json", 
+                schema = @Schema(implementation = GeoLocationDto.class)))
+                // TODO: Document Error Responses
     })
     @GetMapping("/geolocations")
     public ResponseEntity<BaseAppResponse<List<GeoLocationDto>>> retrieveNbsGeoLocations(){

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import jakarta.validation.ConstraintViolationException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,7 +16,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
@@ -33,12 +33,14 @@ public class GlobalExceptionHandler {
      * Security Exceptions
      */
     @ExceptionHandler(AccessDeniedException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ResponseEntity<BaseAppResponse<Map<String, String>>> invalidSecurityExceptionHandler(
-      @NotNull AccessDeniedException ex) {
-    return new ResponseEntity<>(BaseAppResponse.error(
-        "Invalid authorization parameters", "You don't have the rights to access the resource or check the JWT and CSRF Tokens"), HttpStatus.FORBIDDEN);
-  }
+    public ResponseEntity<BaseAppResponse<Map<String, String>>> invalidSecurityExceptionHandler(
+            @NotNull AccessDeniedException ex) {
+        return new ResponseEntity<>(BaseAppResponse.error(
+                "Invalid authorization parameters",
+                "You don't have the rights to access the resource or check the JWT and CSRF Tokens"),
+                HttpStatus.FORBIDDEN);
+    }
+
     /*
      * Validation Exceptions
      */
@@ -46,7 +48,6 @@ public class GlobalExceptionHandler {
      * Used for Request Body Validations in Requests
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<BaseAppResponse<Map<String, String>>> validationExceptionHandler(
             @NotNull MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -63,7 +64,6 @@ public class GlobalExceptionHandler {
      * Validation fails on request parameters, path variables, or method arguments
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<BaseAppResponse<Map<String, String>>> constraintValidationExceptionHandler(
             @NotNull ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -101,7 +101,6 @@ public class GlobalExceptionHandler {
      * Handles validation for Method Parameters
      */
     @ExceptionHandler(HandlerMethodValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<BaseAppResponse<String>> validationExceptionHandler(
             @NonNull HandlerMethodValidationException ex) {
         return new ResponseEntity<>(BaseAppResponse.error(VALIDATION_ERROR, "Invalid input field"),
@@ -109,40 +108,43 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<BaseAppResponse<String>> handleGeneralExceptionHandler(@NotNull Exception ex) {
         return new ResponseEntity<>(BaseAppResponse.error("An unexpected error occurred", ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<BaseAppResponse<String>> handlesConversionFailedException(
+            @NotNull ConversionFailedException ex) {
+        return new ResponseEntity<>(BaseAppResponse.error("Invalid data input format", ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     /*
      * Custom Exceptions
-    */
+     */
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
-    public ResponseEntity<BaseAppResponse<String>> handlesResourceAlreadyExistsException(@NotNull ResourceAlreadyExistsException ex) {
+    public ResponseEntity<BaseAppResponse<String>> handlesResourceAlreadyExistsException(
+            @NotNull ResourceAlreadyExistsException ex) {
         return new ResponseEntity<>(BaseAppResponse.error("Resource already exists", ex.getMessage()),
                 HttpStatus.EXPECTATION_FAILED);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<BaseAppResponse<String>> handlesResourceNotFound(@NotNull ResourceNotFoundException ex) {
         return new ResponseEntity<>(BaseAppResponse.error("Resource not found", ex.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
 
-   
     @ExceptionHandler(DataMappingException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<BaseAppResponse<String>> handlesDataMappingException(@NotNull DataMappingException ex) {
         return new ResponseEntity<>(BaseAppResponse.error("Data mapping error between Model-DTO", ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(WebClientRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<BaseAppResponse<String>> handlesWebClientRequestException(@NotNull WebClientRequestException ex) {
+    public ResponseEntity<BaseAppResponse<String>> handlesWebClientRequestException(
+            @NotNull WebClientRequestException ex) {
         return new ResponseEntity<>(BaseAppResponse.error("Internal proxy error", ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
