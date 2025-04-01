@@ -58,10 +58,10 @@ public class NbsController {
     @Operation(summary = "Retrieve a NBS by ID", security = @SecurityRequirement(name = ""))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "NBS retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "NBS not found", 
+            @ApiResponse(responseCode = "400", description = "Invalid ID provided", 
                 content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = BaseAppResponse.class))),
-                @ApiResponse(responseCode = "404", description = "Invalid ID provided", 
+            @ApiResponse(responseCode = "404", description = "NBS not found", 
                 content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = BaseAppResponse.class))),
             @ApiResponse(responseCode = "500", description = "Invalid Data Mapping", 
