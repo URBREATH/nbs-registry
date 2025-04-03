@@ -179,7 +179,7 @@ class NbsControllerTests {
         when(nbsService.retrieveAllNbsBriefData(any(Pageable.class))).thenReturn(mockPage);
 
         // When
-        ResultActions response = mockMvc.perform(get("/api/nbs")
+        ResultActions response = mockMvc.perform(get("/api/nbs/")
                                         .param("page", "0")
                                         .param("size", "10")
                                         .param("sort", "dateCreated")
@@ -203,7 +203,7 @@ class NbsControllerTests {
                 .thenThrow(new DataMappingException("Unable to map Nbs object to DTO - Error: Test error"));
 
         // When
-        ResultActions response = mockMvc.perform(get("/api/nbs")
+        ResultActions response = mockMvc.perform(get("/api/nbs/")
                                         .param("page", "0")
                                         .param("size", "10"))
                                         .andDo(print());

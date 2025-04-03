@@ -41,6 +41,9 @@ public class NbsDataDto {
     /*
      * Detailed Data Fields
      */
+
+    private String areaCharacterization;
+
     private Date dateCreated;
 
     private NbsStatus status;

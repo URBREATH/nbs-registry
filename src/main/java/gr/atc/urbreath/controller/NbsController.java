@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -118,9 +119,11 @@ public class NbsController {
     public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefData(@RequestParam(defaultValue = "0") int page, 
         @RequestParam(defaultValue = "9") int size, 
         @RequestParam(defaultValue = "dateCreated") String sort, 
-        @RequestParam(defaultValue = "desc") String direction) throws DataMappingException {
+        @RequestParam(defaultValue = "desc") String direction,
+        HttpServletResponse response) throws DataMappingException {
         Page<NbsDataDto> nbsPage = nbsService.retrieveAllNbsBriefData(generatePageableObject(page, size, sort, direction));
-
+        
+        response.setHeader("Access-Control-Allow-Origin", null);
         return new ResponseEntity<>(BaseAppResponse.success(formulatePaginatedResponse(nbsPage), "NBSs retrieved successfully"), HttpStatus.OK);
     }
 
