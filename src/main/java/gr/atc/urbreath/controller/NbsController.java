@@ -119,11 +119,9 @@ public class NbsController {
     public ResponseEntity<BaseAppResponse<PaginationAttributesResponse<NbsDataDto>>> retrieveAllNbsBriefData(@RequestParam(defaultValue = "0") int page, 
         @RequestParam(defaultValue = "9") int size, 
         @RequestParam(defaultValue = "dateCreated") String sort, 
-        @RequestParam(defaultValue = "desc") String direction,
-        HttpServletResponse response) throws DataMappingException {
+        @RequestParam(defaultValue = "desc") String direction) throws DataMappingException {
         Page<NbsDataDto> nbsPage = nbsService.retrieveAllNbsBriefData(generatePageableObject(page, size, sort, direction));
         
-        response.setHeader("Access-Control-Allow-Origin", null);
         return new ResponseEntity<>(BaseAppResponse.success(formulatePaginatedResponse(nbsPage), "NBSs retrieved successfully"), HttpStatus.OK);
     }
 
