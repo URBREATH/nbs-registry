@@ -92,11 +92,6 @@ For local deployment Docker containers can be utilized to deploy the microservic
    ```sh
     APP_PORT=..
     APP_URL=..
-    MONGO_PORT=..
-    MONGO_HOST=..
-    MONGO_DB=..
-    MONGO_USERNAME=..
-    MONGO_PASSWORD=..
     KEYCLOAK_URL=..
     KEYCLOAK_REALM=..
     KEYCLOAK_CLIENT=..
@@ -128,6 +123,9 @@ For more details about the licence, see the [LICENSE](LICENSE) file.
 - Sakis Dalianis (<t.dalianis@atc.gr>)
 
 ## Dependencies and Contacts
-| Dependencies  | MinIO, PostGreSQL, Keycloak, LibreTranslate, Idra, KPI Manager |
+|  |  |
+|--------|---------|
+| Dependencies | MinIO, PostGreSQL, Keycloak, LibreTranslate, Idra, KPI Manager |
 | Contacts | t.dalianis@atc.gr |
+
 
