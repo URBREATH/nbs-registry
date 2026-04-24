@@ -125,3 +125,9 @@ For more details about the licence, see the [LICENSE](LICENSE) file.
 ## Contributors
 
 - Alkis Aznavouridis (<a.aznavouridis@atc.gr>)
+- Sakis Dalianis (<t.dalianis@atc.gr>)
+
+## Dependencies and Contacts
+| Dependencies  | MinIO, PostGreSQL, Keycloak, LibreTranslate, Idra, KPI Manager 
+| Contacts | t.dalianis@atc.gr |
+
