@@ -128,6 +128,6 @@ For more details about the licence, see the [LICENSE](LICENSE) file.
 - Sakis Dalianis (<t.dalianis@atc.gr>)
 
 ## Dependencies and Contacts
-| Dependencies  | MinIO, PostGreSQL, Keycloak, LibreTranslate, Idra, KPI Manager 
+| Dependencies  | MinIO, PostGreSQL, Keycloak, LibreTranslate, Idra, KPI Manager |
 | Contacts | t.dalianis@atc.gr |
 
